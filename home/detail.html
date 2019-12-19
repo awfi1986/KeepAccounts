@@ -9,7 +9,10 @@
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
-		<style> 
+		<style>
+			.mui-bar{
+				height: 64px;
+			}
 			 .mui-content{
 				 padding: 10px;
 			 }
@@ -83,8 +86,8 @@
 							$('#money').html(model[0].money / 100);
 							$('#remark').html(model[0].remark);
 							$('#createTime').html(model[0].create_time);
-							 
-							if(utils.fmtDate( model[0].create_time,'yyyy-MM-dd')==utils.getDate('yyyy-MM-dd')){
+
+							if (utils.fmtDate(model[0].create_time, 'yyyy-MM-dd') == utils.getDate('yyyy-MM-dd')) {
 								$('#btn_del').show();
 							}
 						}
@@ -92,11 +95,11 @@
 				},
 				remove: function() {
 					service.consume_record.remove(j.guid, function(e) {
-						mui.toast('删除成功'); 
+						mui.toast('删除成功');
 						setTimeout(function() {
 							refreshPage('/home/index.html', 'refresh', 1);
 						}, 500);
-					}, function(e) { 
+					}, function(e) {
 						mui.toast('删除失败');
 					});
 				}
