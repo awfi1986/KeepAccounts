@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
+		<title>记一笔</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style> 
+			 .mui-content{
+				 padding: 10px;
+			 }
+			 .mui-content > div{
+				 line-height: 26px;
+			 }
+		</style>
+	</head>
+
+	<body>
+		<header id="head" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size:16px;">明细</a>
+		</header>
+		<div class="mui-content">
+			<div class="date mui-row">
+				<span>记录类型：</span><span id="type"></span>
+			</div>
+			<div class="date mui-row">
+				<span>消费日期：</span><span id="date"></span>
+			</div>
+			<div class="date mui-row">
+				<span>消费类型：</span><span id="consume_name"></span>
+			</div>
+			<div class="date mui-row">
+				<span>消费金额：</span><span id="money"></span>
+			</div>
+			<!-- <div class="date mui-row">
+				<span>记录时间：</span><span id="createTime"></span>
+			</div> -->
+			<div class="date mui-row">
+				<span>备注：</span><span id="remark"></span>
+			</div>
+			<div id="btn_del" class="mui-text-center" style="display: none;">
+				<a class="mui-btn-green">删除</a>
+			</div>
+		</div>
+
+
+		<script src="../js/mui.min.js" charset="UTF-8"></script>
+		<script src="../js/jh.utils.js" charset="UTF-8"></script>
+		<script src="../js/zepto.min.js" charset="UTF-8"></script>
+		<script src="../js/db.helper.js" charset="UTF-8"></script>
+		<script src="../js/service.js" charset="UTF-8"></script>
+		<script type="text/javascript" charset="UTF-8">
+			//初始日期 
+			var j = {
+				guid: 0,
+				//加载消费类型
+				load_type: function(type) {
+
+					service.consume_type.query(type, function(list) {
+						if (list != null && list.length > 0) {
+							var htm = '';
+							for (var i in list) {
+								var checked = i == 0 ? 'class=curr' : '';
+								htm += '<li ' + checked + ' data-tid="' + list[i].id + '"><span class="mui-icon iconfont ' + list[i].icon +
+									'"></span><br/><span>' + list[i].name +
+									'</span></li>';
+							}
+							$('.icon-list ul').html(htm);
+						}
+					});
+				},
+				load_data: function() {
+					service.consume_record.query_dateil(j.guid, function(model) {
+						if (model != null && model.length > 0) {
+							$('#type').html((model[0].type == 0) ? '支出' : '收入');
+							$('#consume_icon').html(model[0].date);
+							$('#consume_name').html(model[0].consume_name);
+							$('#date').html(model[0].date);
+							$('#money').html(model[0].money / 100);
+							$('#remark').html(model[0].remark);
+							$('#createTime').html(model[0].create_time);
+							 
+							if(utils.fmtDate( model[0].create_time,'yyyy-MM-dd')==utils.getDate('yyyy-MM-dd')){
+								$('#btn_del').show();
+							}
+						}
+					});
+				},
+				remove: function() {
+					service.consume_record.remove(j.guid, function(e) {
+						mui.toast('删除成功'); 
+						setTimeout(function() {
+							refreshPage('/home/index.html', 'refresh', 1);
+						}, 500);
+					}, function(e) { 
+						mui.toast('删除失败');
+					});
+				}
+			};
+
+			(function($$, doc) {
+				$$.init({
+					statusBarBackground: '#1b2338'
+				});
+				initPage(function(cur) {
+					j.guid = cur.guid;
+					j.load_data();
+				});
+
+				mui('#btn_del').on('tap', 'a', function() {
+					j.remove();
+				});
+
+			})(mui, document);
+		</script>
+
+	</body>
+
+</html>

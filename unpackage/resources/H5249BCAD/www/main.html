@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html style="background: transparent;">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
+		<title>首页</title> 
+	</head>
+
+	<body>
+
+		<script src="js/mui.min.js" charset="UTF-8"></script>
+		<script src="js/jh.utils.js" charset="UTF-8"></script> 
+		<script src="js/data.js" charset="UTF-8"></script>
+		<script type="text/javascript" charset="UTF-8">
+			(function($$, doc) {
+
+				$$.init({
+					statusBarBackground: '#fff'
+				});
+				init_base_data();
+				toPage('/home/index.html', '/home/index.html');
+			})(mui, document);
+		</script>
+	</body>
+
+</html>

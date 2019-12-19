@@ -1,0 +1,17 @@
+{
+  "main.html": {
+    "href": "main.html",
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/jh.utils.js",
+      "js/main.js"
+    ],
+    "refer": [
+      "main.html"
+    ],
+    "priority": 0
+  }
+}

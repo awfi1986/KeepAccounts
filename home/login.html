@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html> 
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
+		<title>登录</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style>
+			body {
+				background-color: #eee;
+			}
+			.mui-content{
+				position: fixed;
+				bottom:80px;
+			}
+			.input-key{
+				width:100%;
+			    height: 30px; 
+				text-align: center; 
+			} 
+			.input-key > span{   
+				 width: 10px; 
+				 height: 10px; 
+				 margin: 12px;
+				 border:1px solid #aaa;
+				 border-radius: 5px;
+				 display: inline-block;
+			 }
+			 .input-key > span.curr{ 
+			 	 border:5px solid #aaa; 
+			  }
+			 .num-key{
+				 margin: auto auto;
+				 text-align: center;  
+				 display: block;
+				 width:90%; 
+			 } 
+			 .num-key li{ 
+				 width:33.33%;
+				 float:left;  
+				 padding-top:1rem ;
+				 padding-bottom:1rem ;
+			 }
+			 .num-key li span{  
+				 width:3.8rem;
+				 height: 3.8rem;
+				 font-size: 1.5rem;
+				 text-align: center;
+				 line-height: 3.8rem;
+				 display: inline-block;
+				 border:1px solid #aaa;
+				 border-radius: 3rem;
+			 }
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-text-center">
+				<span>请输入密码</span>
+			</div>
+			<div class="input-key">
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+			<div class="num-key">
+				<ul>
+					<li><span>1</span></li>
+					<li><span>2</span></li>
+					<li><span>3</span></li>
+					<li><span>4</span></li>
+					<li><span>5</span></li>
+					<li><span>6</span></li>
+					<li><span>7</span></li>
+					<li><span>8</span></li>
+					<li><span>9</span></li>
+					<li></li>
+					<li><span>0</span></li>
+					<li><span>←</span></li>
+				</ul>
+			</div>
+		</div> 
+		<script src="../js/mui.min.js" charset="UTF-8"></script>
+		<script src="../js/jh.utils.js" charset="UTF-8"></script>
+		<script src="../js/zepto.min.js" charset="UTF-8"></script> 
+		<script type="text/javascript" charset="UTF-8">
+			//初始日期 
+			(function($$, doc) {
+				$$.init({
+					statusBarBackground: '#aaa'
+				});
+				 
+				var password ='3698';
+				var input_password ='';
+				//登录
+				mui('.num-key').on('tap', 'li', function() {
+					var txt =$(this).find('span').text();
+					if(txt!='←'){
+						input_password += txt;
+						
+						var c = $('.input-key span:not(.curr)').length; 
+						if(c>0){ 
+							$('.input-key span:not(.curr)').each(function(){ 
+								$(this).addClass('curr');
+								return false;
+							}); 
+						}
+						if(c==1){ 
+							if(input_password !=password){
+								$('.mui-content .mui-text-center span').text('密码错误');
+								setTimeout(function(){
+									$('.input-key span[class=curr]').removeClass('curr'); 
+									$('.mui-content .mui-text-center span').text('请输入密码'); 
+								},1000);
+								return; 
+							}
+							
+							plus.navigator.setCookie("isLogin", true) ;
+							toPage('/home/index.html','/home/index.html'); 
+							//closePage('home/login.html','home/index.html','/home/index.html');
+							setTimeout(function(){
+								input_password ='';
+								$('.input-key span[class=curr]').removeClass('curr'); 
+							},1000); 
+						} 
+					}else{
+						input_password ='';
+						//var index = $('.input-key span[class=curr]').length;  
+						$('.input-key span[class=curr]').removeClass('curr'); 
+					} 
+				});
+			})(mui, document);
+		</script>
+
+	</body>
+
+</html>

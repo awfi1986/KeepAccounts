@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
+		<title>记一笔</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style>
+			.icon-list {
+				padding: 5px;
+			}
+			
+			.icon-list li {
+				width: 16.66%;
+				margin: 10px auto;
+				padding: 3px 2px;
+				float: left;
+				text-align: center;
+			}
+			
+			.keyboard {
+				position: fixed;
+				bottom: 0px;
+				width: 100%;
+				height: 20.4rem; 
+				background: rgba(100, 100, 100, 0.1) none repeat scroll 0 0;
+				filter: Alpha(opacity=10);
+			}
+			
+			.keyboard .money {
+				height: 4rem;
+				line-height: 4rem;
+				padding-right: 2rem;
+				text-align: right;
+				font-size: 2rem;
+				border-top: 1px solid #999;
+				border-bottom: 1px solid #999;
+			}
+			
+			.num-tab {
+				padding: 0.1rem;
+			}
+			
+			.num-tab span {
+				display: block;
+				font-size: 30px;
+				border: 1px solid #666;
+				margin: 0.1rem;
+				text-align: center;
+				padding: 1.2rem;
+			}
+			
+			span.remove {
+				height: 7.9rem;
+				padding: 2.4rem 1.2rem;
+				line-height: 3rem;
+			}
+			
+			span.completa {
+				height: 7.9rem;
+				padding: 1.2rem;
+				line-height: 3rem;
+			}
+			
+			.curr {
+				color: #007AFF;
+			}
+			
+			textarea{
+				background: rgba(100, 100, 100, 0.1) none repeat scroll 0 0;
+				filter: Alpha(opacity=10);
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="head" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size:16px;"> </a>
+		</header>
+		<div class="mui-content">
+			<div class="date mui-row  mui-text-center">
+				<div class="mui-col-xs-4 front">
+					<a class="mui-icon mui-icon-left-nav"></a>
+				</div>
+				<div class="mui-col-xs-4">
+					<span id="date" style="font-size: 18px;">2019-12-12</span>
+				</div>
+				<div class="mui-col-xs-4 after">
+					<a class="mui-icon mui-icon-left-nav" style=" transform: rotateY(180deg);"></a>
+				</div>
+			</div>
+			<div class="icon-list">
+				<ul>
+					<li class="curr">
+						<span class="mui-icon iconfont icon-qian"></span><br />
+						<span>一般</span>
+					</li>
+					<li>
+						<span class="mui-icon iconfont icon-type"></span><br />
+						<span>一般</span>
+					</li>
+				</ul>
+			</div>
+			<!-- <div class="mui-text-center"><input type="number" class="mui-text" style="width:90%" placeholder="请输入金额" /></div> -->
+			<div class="mui-text-center"><textarea id="remark" class="mui-text" style="width:90%" placeholder="备注说明"></textarea></div>
+		</div>
+
+		<div class="keyboard">
+			<div class="money">
+				<span>0</span>
+			</div>
+			<div class="mui-row num-tab">
+				<div class="mui-col-xs-9 num-key">
+					<div class="mui-row">
+						<div class="mui-col-xs-4"><span>1</span></div>
+						<div class="mui-col-xs-4"><span>2</span></div>
+						<div class="mui-col-xs-4"><span>3</span></div>
+					</div>
+					<div class="mui-row">
+						<div class="mui-col-xs-4"><span>4</span></div>
+						<div class="mui-col-xs-4"><span>5</span></div>
+						<div class="mui-col-xs-4"><span>6</span></div>
+					</div>
+					<div class="mui-row">
+						<div class="mui-col-xs-4"><span>7</span></div>
+						<div class="mui-col-xs-4"><span>8</span></div>
+						<div class="mui-col-xs-4"><span>9</span></div>
+					</div>
+					<div class="mui-row">
+						<div class="mui-col-xs-4"><span>.</span></div>
+						<div class="mui-col-xs-8"><span>0</span></div>
+					</div>
+				</div>
+				<div class="mui-col-xs-3">
+					<div><span class="remove">
+							<=</span> </div> <div><span class="completa">完成</span></div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/mui.min.js" charset="UTF-8"></script>
+		<script src="../js/jh.utils.js" charset="UTF-8"></script>
+		<script src="../js/zepto.min.js" charset="UTF-8"></script>
+		<script src="../js/db.helper.js" charset="UTF-8"></script>
+		<script src="../js/service.js" charset="UTF-8"></script>
+		<script type="text/javascript" charset="UTF-8">
+			//初始日期
+			var date = new Date();
+			var j = {
+				type: 0,
+				init: function() {
+					j.setDate();
+					//加载消费类型
+					service.consume_type.query(j.type, function(list) {
+						if (list != null && list.length > 0) {
+							var htm = '';
+							for (var i in list) {
+								var checked = i == 0 ? 'class=curr' : '';
+								htm += '<li ' + checked + ' data-tid="' + list[i].id + '"><span class="mui-icon iconfont ' + list[i].icon +
+									'"></span><br/><span>' + list[i].name +
+									'</span></li>';
+							}
+							$('.icon-list ul').html(htm);
+						}
+					});
+				},
+				setDate: function() {
+					var y = date.getFullYear();
+					var m = date.getMonth() + 1;
+					var d = date.getDate();
+					if (m < 10) m = '0' + m;
+					if (d < 10) d = '0' + d;
+					var strDate = y + '-' + m + '-' + d;
+					$('#date').html(strDate);
+				},
+				save: function() {
+
+					var bill = {
+						guid: utils.generate_guid(),
+						type: j.type,
+						date: $('#date').html(),
+						consume_type_id: $('.icon-list li[class=curr]').data('tid'),
+						money: parseFloat($('.money span').html()) * 100,
+						remark: $('#remark').val(),
+						create_time: new Date()
+					};
+
+					if (bill.money == 0) {
+						mui.toast('请输入金额');
+						return;
+					}
+
+					service.consume_record.insert(bill);
+
+					mui.toast('保存成功');
+
+					setTimeout(function() {
+						refreshPage('/home/index.html', 'refresh', 1);
+					}, 500);
+				}
+			};
+
+			(function($$, doc) {
+				$$.init({
+					statusBarBackground: '#1b2338'
+				});
+				initPage(function(cur) {
+					j.type = cur.type;
+					$('#head a').html((j.type == 0) ? '支出' : '收入');
+					j.init();
+				});
+
+				//加减日期
+				mui('.date').on('tap', 'div', function() {
+					var time = date.getTime();
+					if ($(this).hasClass('front')) {
+						time = time - 1000 * 60 * 60 * 24;
+					} else if ($(this).hasClass('after')) {
+						time = time + 1000 * 60 * 60 * 24;
+					}
+					var threeDay = 1000 * 60 * 60 * 24 * 3;
+					if (new Date().getTime() - time - threeDay > 0) {
+						mui.toast('只能记当天或前两天的');
+						return;
+					}
+					if (new Date().getTime() - time < 0) {
+						mui.toast('只能记当天或前两天的');
+						return;
+					}
+					date.setTime(time);
+					j.setDate();
+				});
+				//选择消息类型
+				mui('.icon-list').on('tap', 'li', function() {
+					if (!$(this).find('span').hasClass('icon-tianjia')) {
+						$('.icon-list li').removeClass('curr');
+						$(this).addClass('curr');
+					} else {
+						mui.toast('添加功能还未开发');
+					}
+				});
+				//数字点击事件 
+				mui('.num-key').on('tap', 'span', function(e) {
+
+					var num = this.innerHTML
+					var money = Zepto('.money span').html();
+
+					if (money == '0' && num != '.') money = '';
+
+					if (money.indexOf('.') != -1) {
+						if (num == '.') {
+							mui.toast('金额中只能有一个小数点');
+							return;
+						}
+						if ((money.length - money.indexOf('.') - 2) > 0) {
+							mui.toast('金额小数点后只能有两位');
+							return;
+						}
+					}
+
+					money = money + num;
+
+					$('.money span').html(money);
+				});
+				//键盘回删事件
+				mui('.num-tab').on('tap', '.remove', function(e) {
+					var money = $('.money span').html();
+
+					if (money == '0' || money.length == 1) money = '0';
+					else {
+						money = money.substring(0, money.length - 1);
+					}
+					$('.money span').html(money);
+				});
+				//键盘完成事件
+				mui('.num-tab').on('tap', '.completa', function(e) {
+					j.save();
+				});
+			})(mui, document);
+		</script>
+
+	</body>
+
+</html>

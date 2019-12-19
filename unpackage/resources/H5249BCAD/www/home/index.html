@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html style="background: transparent;">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="white">
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style>
+			.header {
+				padding: 2rem 1.5rem;
+				height: 6rem;
+				font-size: 14px;
+			}
+			
+			.header .month {
+				font-size: 2.5rem;
+			}
+			
+			.mui-badge {
+				background-color: inherit;
+			}
+			
+			.mui-table-view-cell {
+				line-height: 30px;
+			}
+			#list{
+				 height: 504px;
+				 overflow-y: scroll;
+			}
+			.nav ul {
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.nav ul li {
+				float: left;
+				width: 33.3333%;
+				padding: 0.6rem;
+				text-align: center;
+			}
+			
+			.nav ul li.curr {
+				background-color: white;
+			}
+			
+			.mui-table-view::before {
+				height: auto;
+			}
+			
+			.sum {
+				padding-top: 0px;
+				padding-bottom: 0px;
+			}
+			
+			.sum .mui-table-view-cell::after {
+				content: ''
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-row header">
+			<div class="mui-col-xs-4">
+				<span class="year">2019</span><br />
+				<span class="month">11</span><span>月</span>
+			</div>
+			<div class="mui-col-xs-4">
+				<div>本月收入(元)</div>
+				<div><span id="txtIncome">0.00</span></div>
+			</div>
+			<div class="mui-col-xs-4">
+				<div>本月支出(元)</div>
+				<div><span id="txtPay">0.00</span></div>
+			</div>
+		</div>
+		<div class="mui-content">
+			<div class="nav">
+				<ul>
+					<li class="curr">支出明细</li>
+					<li>收入明细</li>
+					<li>分类统计</li>
+				</ul>
+			</div>
+			<div id="list">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell sum">
+						11月25日
+						<span class="mui-badge">共支出：12.8</span>
+					</li>
+					<li class="mui-table-view-cell">
+						<span class="mui-icon iconfont icon-yule"></span>
+						<span> Item 1</span>
+						<span class="mui-badge">11</span>
+					</li>
+					<li class="mui-table-view-cell">
+						<span class="mui-icon iconfont icon-yule"></span>
+						<span> Item 1</span>
+						<span class="mui-badge">11</span>
+					</li>
+					<li class="mui-table-view-cell sum">
+						11月24日
+						<span class="mui-badge">共支出：12.8</span>
+					</li>
+					<li class="mui-table-view-cell">
+						<span class="mui-icon iconfont icon-yule"></span>
+						<span> Item 1</span>
+						<span class="mui-badge">11</span>
+					</li>
+					<li class="mui-table-view-cell">
+						<span class="mui-icon iconfont icon-yule"></span>
+						<span> Item 1</span>
+						<span class="mui-badge">11</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<nav class="mui-bar mui-bar-tab" style="height: 56px">
+			<a id="homeTab" class="mui-tab-item  mui-active" href="../home/add.html">
+				<span class="mui-tab-label">记一笔</span>
+			</a>
+		</nav>
+		<script src="../js/mui.min.js" charset="UTF-8"></script>
+		<script src="../js/jh.utils.js" charset="UTF-8"></script>
+		<script src="../js/zepto.min.js" charset="UTF-8"></script>
+		<script src="../js/data.js" charset="UTF-8"></script>
+		<script type="text/javascript" charset="UTF-8">
+			var j = {
+				type:0,
+				year: 0,
+				month: 1,
+				init: function() {
+					$('.year').text(j.year);
+					$('.month').text(j.month);
+					j.month_statis();
+					j.load_bill();
+				},
+				load_bill: function() {
+					var date = new Date(j.year, j.month + 1, 0);
+					var startDate = j.year + '-' + j.month + '-' + '01';
+					var endDate = j.year + '-' + j.month + '-' + date.getDate();
+					data_action.consume_record.query(j.type, startDate, endDate, function(list) {
+						var htm = '';
+						if (list != null && list.length > 0) {
+							for (var i in list) {
+								htm += '<li class="mui-table-view-cell">' +
+									'<span class="mui-icon iconfont ' + list[i].consume_icon + '"></span>' +
+									'<span>' + list[i].consume_name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + list[i].date + '</span><span class="mui-badge">' + fmtMoney(list[i].money, 2) +
+									'</span></li>';
+							}
+						}
+						if (htm == '') {
+							htm = '<li class="mui-table-view-cell" style="text-align:center"><span>暂无数据</span></li>';
+						}
+						$('.mui-content #list ul').html(htm);
+					});
+				},
+				load_statis: function() {
+
+					$('.mui-content #list ul').html(
+						'<li class="mui-table-view-cell" style="text-align:center"><span>功能开发中...</span></li>');
+				},
+				month_statis: function() {
+					var date = new Date(j.year, j.month + 1, 0);
+					var startDate = j.year + '-' + j.month + '-' + '01';
+					var endDate = j.year + '-' + j.month + '-' + date.getDate();
+					data_action.month_statis(0, startDate, endDate, function(data) {
+						if (data[0]['total'] != null) {
+							$('#txtPay').text(fmtMoney(data[0]['total'], 2));
+						}
+					});
+					data_action.month_statis(1, startDate, endDate, function(data) {
+						if (data[0]['total'] != null) {
+							$('#txtIncome').text(fmtMoney(data[0]['total'], 2));
+						}
+					});
+				}
+			};
+
+			(function($$, doc) {
+
+				$$.init({
+					statusBarBackground: '#aaa'
+				});
+
+				initPage(function(cur) {
+
+					var date = new Date();
+					j.year = date.getFullYear();
+					j.month = date.getMonth() + 1;
+					j.type = 0;
+					j.init();
+				});
+
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTab = this.getAttribute('href');
+					var type = $('.nav li[class=curr]').index();
+					toPage(targetTab, targetTab, {
+						type: j.type
+					});
+				});
+
+				mui('.nav').on('tap', 'li', function() {
+
+					var index = $(this).index();
+
+					if (index != 2) {
+						j.type = index;
+						j.load_bill(index);
+						$('nav').show();
+					} else {
+						$('nav').hide();
+						j.load_statis();
+					}
+					$('.nav li').removeClass('curr');
+					$(this).addClass('curr');
+				});
+			})(mui, document);
+
+			 
+			window.addEventListener('refresh',function(){
+			     j.init();
+			})
+		</script>
+	</body>
+
+</html>
