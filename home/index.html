@@ -203,7 +203,7 @@
 							categories.push(v.name);
 							data.push(v.total / 100);
 						});
-						var title = utils.fmtDate(j.start_date, 'yyyy-MM');
+						var title = utils.fmtDate(j.start_date, 'yyyy年MM月');
 						j.showPicReport(title + '支出比率', arr);
 						j.showColumReport(title + '支出统计', categories, data);
 					});

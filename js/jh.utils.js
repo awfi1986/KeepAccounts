@@ -434,103 +434,6 @@ function closePageOther(arg1) {
 }
 
 /*
- *对部分存储在本地信息进行加密和解密 
- */
-
-/**
- * 加密
- * @param {Object} str 想要加密的字符串
- * @param {Object} key 加密的Key
- * return str 加密后的密文字符串
- */
-function encrypt(str, key) {
-	if (key == null || key.length <= 0) {
-		//alert("请输入加密的Key.");
-		return "";
-	}
-	var prand = "";
-	for (var i = 0; i < key.length; i++) {
-		prand += key.charCodeAt(i).toString();
-	}
-	var sPos = Math.floor(prand.length / 5);
-	var mult = parseInt(prand.charAt(sPos) + prand.charAt(sPos * 2) + prand.charAt(sPos * 3) + prand.charAt(sPos * 4) +
-		prand.charAt(sPos * 5));
-	var incr = Math.ceil(key.length / 2);
-	var modu = Math.pow(2, 31) - 1;
-	if (mult < 2) {
-		alert(
-			"Algorithm cannot find a suitable hash. Please choose a different password.  Possible considerations are to choose a more complex or longer password."
-		);
-		return null;
-	}
-	var salt = Math.round(Math.random() * 1000000000) % 100000000;
-	prand += salt;
-	while (prand.length > 10) {
-		prand = (parseInt(prand.substring(0, 10)) + parseInt(prand.substring(10, prand.length))).toString();
-	}
-	prand = (mult * prand + incr) % modu;
-	var enc_chr = "";
-	var enc_str = "";
-	for (var i = 0; i < str.length; i++) {
-		enc_chr = parseInt(str.charCodeAt(i) ^ Math.floor((prand / modu) * 255));
-		if (enc_chr < 16) {
-			enc_str += "0" + enc_chr.toString(16);
-		} else {
-			enc_str += enc_chr.toString(16);
-		}
-		prand = (mult * prand + incr) % modu;
-	}
-	salt = salt.toString(16);
-	while (salt.length < 8) {
-		salt = "0" + salt;
-	}
-	enc_str += salt;
-	return enc_str;
-}
-
-/**
- * 对加密的字符串进行解密
- * @param {Object} str 加密码后的字符串
- * @param {Object} key 加密密文Key
- * return 返回解密后的字符串
- */
-function decrypt(str, key) {
-	if (str == null || str.length < 8) {
-		//alert("请输入最小8位长度的加密后字符串.");
-		return "";
-	}
-	if (key == null || key.length <= 0) {
-		//alert("请输入加密Key.");
-		return "";
-	}
-	var prand = "";
-	for (var i = 0; i < key.length; i++) {
-		prand += key.charCodeAt(i).toString();
-	}
-	var sPos = Math.floor(prand.length / 5);
-	var mult = parseInt(prand.charAt(sPos) + prand.charAt(sPos * 2) + prand.charAt(sPos * 3) + prand.charAt(sPos * 4) +
-		prand.charAt(sPos * 5));
-	var incr = Math.round(key.length / 2);
-	var modu = Math.pow(2, 31) - 1;
-	var salt = parseInt(str.substring(str.length - 8, str.length), 16);
-	str = str.substring(0, str.length - 8);
-	prand += salt;
-	while (prand.length > 10) {
-		prand = (parseInt(prand.substring(0, 10)) + parseInt(prand.substring(10, prand.length))).toString();
-	}
-	prand = (mult * prand + incr) % modu;
-	var enc_chr = "";
-	var enc_str = "";
-	for (var i = 0; i < str.length; i += 2) {
-		enc_chr = parseInt(parseInt(str.substring(i, i + 2), 16) ^ Math.floor((prand / modu) * 255));
-		enc_str += String.fromCharCode(enc_chr);
-		prand = (mult * prand + incr) % modu;
-	}
-	return enc_str;
-}
-
-
-/*
  * 获取参数
  * 返回json，json的字段名称都是小写
  */
@@ -599,7 +502,7 @@ var utils = {
 			t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");
 		}
 		return t.split("").reverse().join("") + "." + r;
-	}, 
+	},
 	//获得当前时间
 	getDate: function(fmt) {
 		var myDate = new Date();
@@ -683,5 +586,85 @@ var utils = {
 				break;
 		}
 		return parseInt((eTime.getTime() - sTime.getTime()) / parseInt(divNum));
+	},
+	//加密字符串
+	encrypt: function(str, key) {
+		if (key == null || key.length <= 0) {
+			//alert("请输入加密的Key.");
+			return "";
+		}
+		var prand = "";
+		for (var i = 0; i < key.length; i++) {
+			prand += key.charCodeAt(i).toString();
+		}
+		var sPos = Math.floor(prand.length / 5);
+		var mult = parseInt(prand.charAt(sPos) + prand.charAt(sPos * 2) + prand.charAt(sPos * 3) + prand.charAt(sPos * 4) +
+			prand.charAt(sPos * 5));
+		var incr = Math.ceil(key.length / 2);
+		var modu = Math.pow(2, 31) - 1;
+		if (mult < 2) {
+			alert(
+				"Algorithm cannot find a suitable hash. Please choose a different password.  Possible considerations are to choose a more complex or longer password."
+			);
+			return null;
+		}
+		var salt = Math.round(Math.random() * 1000000000) % 100000000;
+		prand += salt;
+		while (prand.length > 10) {
+			prand = (parseInt(prand.substring(0, 10)) + parseInt(prand.substring(10, prand.length))).toString();
+		}
+		prand = (mult * prand + incr) % modu;
+		var enc_chr = "";
+		var enc_str = "";
+		for (var i = 0; i < str.length; i++) {
+			enc_chr = parseInt(str.charCodeAt(i) ^ Math.floor((prand / modu) * 255));
+			if (enc_chr < 16) {
+				enc_str += "0" + enc_chr.toString(16);
+			} else {
+				enc_str += enc_chr.toString(16);
+			}
+			prand = (mult * prand + incr) % modu;
+		}
+		salt = salt.toString(16);
+		while (salt.length < 8) {
+			salt = "0" + salt;
+		}
+		enc_str += salt;
+		return enc_str;
+	},
+	//解密
+	encrypt: function(str, key) {
+		if (str == null || str.length < 8) {
+			//alert("请输入最小8位长度的加密后字符串.");
+			return "";
+		}
+		if (key == null || key.length <= 0) {
+			//alert("请输入加密Key.");
+			return "";
+		}
+		var prand = "";
+		for (var i = 0; i < key.length; i++) {
+			prand += key.charCodeAt(i).toString();
+		}
+		var sPos = Math.floor(prand.length / 5);
+		var mult = parseInt(prand.charAt(sPos) + prand.charAt(sPos * 2) + prand.charAt(sPos * 3) + prand.charAt(sPos * 4) +
+			prand.charAt(sPos * 5));
+		var incr = Math.round(key.length / 2);
+		var modu = Math.pow(2, 31) - 1;
+		var salt = parseInt(str.substring(str.length - 8, str.length), 16);
+		str = str.substring(0, str.length - 8);
+		prand += salt;
+		while (prand.length > 10) {
+			prand = (parseInt(prand.substring(0, 10)) + parseInt(prand.substring(10, prand.length))).toString();
+		}
+		prand = (mult * prand + incr) % modu;
+		var enc_chr = "";
+		var enc_str = "";
+		for (var i = 0; i < str.length; i += 2) {
+			enc_chr = parseInt(parseInt(str.substring(i, i + 2), 16) ^ Math.floor((prand / modu) * 255));
+			enc_str += String.fromCharCode(enc_chr);
+			prand = (mult * prand + incr) % modu;
+		}
+		return enc_str;
 	}
 }
