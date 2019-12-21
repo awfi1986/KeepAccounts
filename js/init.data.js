@@ -89,7 +89,7 @@
  			name: '添加',
  			type: 0,
  			icon: 'icon-tianjia',
- 			sort: 16
+ 			sort: 100
  		}, {
  			id: 12,
  			name: '工资',
@@ -125,13 +125,31 @@
  			name: '添加',
  			type: 1,
  			icon: 'icon-tianjia',
- 			sort: 17
+ 			sort: 100
+ 		}, {
+ 			id: 18,
+ 			name: '日用品',
+ 			type: 0,
+ 			icon: 'icon-riyongpin',
+ 			sort: 18
+ 		}, {
+ 			id: 19,
+ 			name: '水果',
+ 			type: 0,
+ 			icon: 'icon-shuiguo',
+ 			sort: 19
+ 		}, {
+ 			id: 20,
+ 			name: '礼金',
+ 			type: 0,
+ 			icon: 'icon-shuiguo',
+ 			sort: 20
  		}];
  		for (var i in list)
  			service.consume_type.insert(list[i]);
 
  		//初始化标示
  		localStorage.setItem("$isInit", 1);
- 	}
+ 	} 
  };
  

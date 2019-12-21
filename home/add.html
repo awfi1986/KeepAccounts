@@ -29,7 +29,7 @@
 				bottom: 0px;
 				width: 100%;
 				height: 20.4rem; 
-				background: rgba(100, 100, 100, 0.1) none repeat scroll 0 0;
+				background: rgba(10, 10, 10, 0.2) none repeat scroll 0 0;
 				filter: Alpha(opacity=10);
 			}
 			
@@ -39,8 +39,8 @@
 				padding-right: 2rem;
 				text-align: right;
 				font-size: 2rem;
-				border-top: 1px solid #999;
-				border-bottom: 1px solid #999;
+				border-top: 1px solid #26588A;
+				border-bottom: 1px solid #26588A;
 			}
 			
 			.num-tab {
@@ -50,7 +50,7 @@
 			.num-tab span {
 				display: block;
 				font-size: 30px;
-				border: 1px solid #666;
+				border: 1px solid #26588A;
 				margin: 0.1rem;
 				text-align: center;
 				padding: 1.2rem;
@@ -63,25 +63,32 @@
 			}
 			
 			span.completa {
+				color:#26588A;
 				height: 7.9rem;
 				padding: 1.2rem;
-				line-height: 3rem;
+				line-height: 3rem; 
 			}
 			
 			.curr {
 				color: #007AFF;
 			}
 			
-			textarea{
-				background: rgba(100, 100, 100, 0.1) none repeat scroll 0 0;
-				filter: Alpha(opacity=10);
+			textarea{ 
+				background: rgba(10, 10, 10, 0.2) none repeat scroll 0 0;
+				filter: Alpha(opacity=20);
 			}
 		</style>
 	</head>
 
 	<body>
 		<header id="head" class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size:16px;"> </a>
+			<div class="mui-row">
+				<div class="mui-col-xs-4">
+					<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size:16px;">返回</a>
+				</div>
+				<div class="mui-col-xs-4 mui-text-center" style="padding-top: 9px;"></div>
+				<div class="mui-col-xs-4"></div>
+			</div>
 		</header>
 		<div class="mui-content">
 			<div class="date mui-row  mui-text-center">
@@ -207,12 +214,10 @@
 			};
 
 			(function($$, doc) {
-				$$.init({
-					statusBarBackground: '#1b2338'
-				});
+				$$.init({});
 				initPage(function(cur) {
 					j.type = cur.type;
-					$('#head a').html((j.type == 0) ? '支出' : '收入');
+					$('#head .mui-text-center').html((j.type == 0) ? '添加支出' : '添加收入');
 					j.init();
 				});
 

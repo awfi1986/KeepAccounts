@@ -30,7 +30,7 @@
 				line-height: 30px;
 			}
 			#list,#statis-map{
-				 height: 504px;
+				 height: 32rem;
 				 overflow-y: scroll; 
 			}
 			.nav ul {
@@ -46,7 +46,7 @@
 			}
 			
 			.nav ul li.curr {
-				background: rgba(100, 100, 100, 0.1) none repeat scroll 0 0;
+				background: rgba(10, 10, 10, 0.2) none repeat scroll 0 0;
 				filter: Alpha(opacity=10);
 			}
 			
@@ -54,8 +54,11 @@
 				height: auto; 
 			}
 			.mui-table-view  { 
-				background: rgba(100, 100, 100, 0.1) none repeat scroll 0 0;
+				background: rgba(10, 10, 10, 0.2) none repeat scroll 0 0;
 				filter: Alpha(opacity=10);
+			}
+			.mui-table-view:after{ 
+				background-color:rgba(10, 10, 10, 0.2);
 			}
 			.sum {
 				padding-top: 0px;
@@ -69,9 +72,17 @@
 				background-color:#444;
 			}
 			.mui-pull-bottom-pocket{display: none;}
-			.mui-bar-tab .mui-tab-item.mui-active{
-				color: #24e0ff; 
+			.mui-bar{
+				-webkit-box-shadow:0 0 1px rgba(38,88,138,.5);
+				box-shadow:0 0 1px rgba(38,88,138,.5);
 			}
+			.mui-bar-tab .mui-tab-item.mui-active{
+				color: rgb(38,88,138); 
+			}
+			.mui-table-view-cell > a:not(.mui-btn).mui-active,.mui-table-view-cell.mui-active{
+				background-color: rgba(5,71,136,.2);
+			}
+			
 		</style>
 	</head>
 
@@ -86,7 +97,7 @@
 				<div><span id="txtIncome">0.00</span></div>
 			</div>
 			<div class="mui-col-xs-4">
-				<div>本月支出(元)</div>
+				<div id="div-pay">本月支出(元)</div>
 				<div><span id="txtPay">0.00</span></div>
 			</div>
 		</div>
@@ -117,15 +128,16 @@
 							<span> Item 1</span>
 							<span class="mui-badge">11</span>
 						</a>
-					</li> -->
+					</li>
+					<li class="mui-table-view-cell" style="text-align:center"><span>我已经到底了</span></li> -->
 				</ul>
-				<nav class="mui-bar mui-bar-tab" style="height: 56px">
+				<nav class="mui-bar mui-bar-tab" style="height:3.5rem">
 					<a id="homeTab" class="mui-tab-item  mui-active" href="../home/add.html">
 						<span class="mui-tab-label" style="font-size: 1.2rem;">记一笔</span>
 					</a>
 				</nav>
 			</div>
-			<div id="statis-map" style="height:560px;display:none;">
+			<div id="statis-map" style="height:36rem;display:none;">
 				<div id="pie-map"></div>
 				<div id="column-map"></div>
 			</div>
@@ -167,19 +179,21 @@
 
 						var htm = [];
 						$.each(list, function(i, v) {
-							htm.push('<li class="mui-table-view-cell" data-guid="' + v.guid + '" data-type="' + v.type + '">' +
-								'<a class="mui-navigate-right">' +
+							htm.push('<li class="mui-table-view-cell">' +
+								'<a class="mui-navigate-right" data-guid="' + v.guid + '" data-type="' + v.type + '">' +
 								'<span class="mui-icon iconfont ' + v.consume_icon + '"></span>' +
 								'<span>' + v.consume_name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + v.date +
 								'</span><span class="mui-badge">' + utils.fmtMoney(v.money, 2) + '</span></a></li>');
 						});
 
 						var isEndRefresh = list.length < j.page_size;
+
 						if (isEndRefresh) {
 							if (j.page_index == 1 && list.length == 0) {
 								htm.push('<li class="mui-table-view-cell" style="text-align:center"><span>暂无数据</span></li>');
 							} else {
 								htm.push('<li class="mui-table-view-cell" style="text-align:center"><span>我已经到底了</span></li>');
+								mui('#list').pullRefresh().disablePullupToRefresh();
 							}
 						}
 
@@ -209,21 +223,29 @@
 					});
 				},
 				month_statis: function() {
-					service.month_statis(0, j.start_date, j.end_date, function(data) {
-						if (data[0]['total'] != null) {
-							$('#txtPay').text(utils.fmtMoney(data[0]['total'], 2));
-						}
-					});
-					service.month_statis(1, j.start_date, j.end_date, function(data) {
-						if (data[0]['total'] != null) {
-							$('#txtIncome').text(utils.fmtMoney(data[0]['total'], 2));
-						}
-					});
+					service.month_statis(j.start_date, j.end_date, function(data) {
+						var isShow = localStorage.getItem("$isShowMoney");
+						 
+						if(data.length>0){
+							$.each(data,function (i,v) {
+								var money = utils.fmtMoney(v.total, 2);
+								var text_money = (isShow==0)?'******':money;
+								if(v.type==0){
+									$('#txtPay').text(text_money);
+									$('#txtPay').data('money',money);
+								}else{
+									$('#txtIncome').text(text_money);
+									$('#txtIncome').data('money',money);
+								}
+							})
+						} 
+					}); 
 				},
 				refresh: function() {
-					j.month_statis();
 					j.page_index = 0;
+					j.month_statis();
 					$('.mui-content #detail').html('');
+					mui('#list').pullRefresh().enablePullupToRefresh();
 					mui('#list').pullRefresh().refresh(true);
 					j.load_bill();
 				},
@@ -231,17 +253,19 @@
 					Highcharts.chart('pie-map', {
 						credits: {
 							enabled: false
-						}, 
+						},
 						chart: {
 							plotBackgroundColor: null,
 							plotBorderWidth: null,
-							backgroundColor:'rgba(100,100,100,0.1)',
+							backgroundColor: 'rgba(10, 10, 10, 0.2)',
 							plotShadow: false,
 							type: 'pie'
 						},
 						title: {
 							text: title,
-							style:{'color': '#90aecb'}
+							style: {
+								'color': '#90aecb'
+							}
 						},
 						tooltip: {
 							pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -270,11 +294,13 @@
 						},
 						chart: {
 							type: 'column',
-							backgroundColor:'rgba(100,100,100,0.1)'
+							backgroundColor: 'rgba(10, 10, 10, 0.2)'
 						},
 						title: {
 							text: title,
-							style:{'color': '#90aecb'}
+							style: {
+								'color': '#90aecb'
+							}
 						},
 						xAxis: {
 							categories: categories // ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
@@ -283,7 +309,7 @@
 							title: {
 								text: '金额(元)'
 							}
-						}, 
+						},
 						plotOptions: {
 							series: {
 								animation: {
@@ -294,7 +320,7 @@
 						},
 						series: [{
 							title: '金额',
-							name: '消费类型', 
+							name: '消费类型',
 							data: data // [29.9, 71.5, 106.4, 129.2, 111]
 						}]
 					});
@@ -304,7 +330,6 @@
 			(function($$, doc) {
 
 				$$.init({
-					statusBarBackground: '#1b2338',
 					pullRefresh: {
 						container: '#list', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
 						up: {
@@ -332,15 +357,13 @@
 				mui('.nav').on('tap', 'li', function() {
 
 					j.type = $(this).index();
-					$('nav,#detail,#statis-map,#list').hide();
-					if (j.type == 0) {
-						$('nav,#detail,#list').show();
-						j.refresh();
-					} else if (j.type == 1) {
+					if (j.type != 2) {
+						$('#statis-map').hide();
 						$('nav,#detail,#list').show();
 						j.refresh();
 					} else {
 						$('#statis-map').show();
+						$('nav,#detail,#list').hide();
 						j.load_statis();
 					}
 
@@ -348,13 +371,26 @@
 					$(this).addClass('curr');
 				});
 				//详情
-				mui('#list').on('tap', 'li', function() {
+				mui('#list > ul').on('tap', 'a', function() {
 					var guid = $(this).data('guid');
-					var type = $(this).data('type');
+					var type = $(this).data('type'); 
 					toPage('/home/detail.html', '/home/detail.html', {
 						guid: guid,
 						type: type
 					});
+				});
+				//显示或隐藏本月收入和支出
+				mui('.header').on('tap','#div-pay',function(){
+					var isShow = localStorage.getItem("$isShowMoney");
+					if(isShow==0){
+						$('#txtPay').text($('#txtPay').data('money'));
+						$('#txtIncome').text($('#txtIncome').data('money'));
+						 localStorage.setItem("$isShowMoney",1);
+					}else{
+						$('#txtPay').text("******");
+						$('#txtIncome').text("******"); 
+						 localStorage.setItem("$isShowMoney",0);
+					} 
 				});
 			})(mui, document);
 

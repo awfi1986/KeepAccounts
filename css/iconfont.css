@@ -4,16 +4,12 @@
 }
 
 .iconfont {
-  font-family:"iconfont" !important;
-  font-size:24px;
-  font-style:normal; 
+  font-family: "iconfont" !important;
+  font-size: 24px;
+  font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.active .iconfont{
-	color:#FF9934;
-}
-
 
 .icon-shejiao:before {
   content: "\e644";
@@ -33,10 +29,6 @@
 
 .icon-tianjia:before {
   content: "\e635";
-}
-
-.icon-qita:before {
-  content: "\e64a";
 }
 
 .icon-gongzi:before {
@@ -63,6 +55,10 @@
   content: "\e666";
 }
 
+.icon-riyongpin:before {
+  content: "\e620";
+}
+
 .icon-mifan:before {
   content: "\e61f";
 }
@@ -75,8 +71,20 @@
   content: "\e6f6";
 }
 
+.icon-shuiguo:before {
+  content: "\e7ec";
+}
+
 .icon-fangdaijisuan:before {
   content: "\e667";
+}
+
+.icon-yanjing:before {
+  content: "\e600";
+}
+
+.icon-yanjing-close:before {
+  content: "\e6ad";
 }
 
 .icon-tuijianlijin:before {

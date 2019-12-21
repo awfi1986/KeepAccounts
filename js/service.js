@@ -73,10 +73,10 @@ var service = {
 		}
 	},
 	//支出收入金额月统计
-	month_statis: function(type, startDate, endDate, callback) {
+	month_statis: function(startDate, endDate, callback) {
 
-		var sql = "select sum(money) as total from t_consume_record where type =" + type + " and '" + startDate +
-			"' <= date and date <= '" + endDate + "'";
+		var sql = "select type,sum(money) as total from t_consume_record where '" + startDate +
+			"' <= date and date <= '" + endDate + "' group by type";
 
 		return db_helper.selectSql(sql, callback);
 	},

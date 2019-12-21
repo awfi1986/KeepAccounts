@@ -24,7 +24,13 @@
 
 	<body>
 		<header id="head" class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size:16px;">明细</a>
+			<div class="mui-row">
+				<div class="mui-col-xs-4">
+					<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-size:16px;">返回</a>
+				</div>
+				<div class="mui-col-xs-4 mui-text-center" style="padding-top: 9px;">明细</div>
+				<div class="mui-col-xs-4"></div>
+			</div>
 		</header>
 		<div class="mui-content">
 			<div class="date mui-row">
@@ -45,11 +51,11 @@
 			<div class="date mui-row">
 				<span>备注：</span><span id="remark"></span>
 			</div>
-			<div id="btn_del" class="mui-text-center" style="display: none;">
-				<a class="mui-btn-green">删除</a>
-			</div>
-		</div>
 
+		</div>
+		<div id="btn_del" class="mui-text-center" style="display: none;padding-top: 3rem;">
+			<a class="mui-btn-blue" style="padding: 10px 20px;border-radius: 10px;background: #26588A;">删 除</a>
+		</div>
 
 		<script src="../js/mui.min.js" charset="UTF-8"></script>
 		<script src="../js/jh.utils.js" charset="UTF-8"></script>
@@ -84,7 +90,7 @@
 							$('#consume_name').html(model[0].consume_name);
 							$('#date').html(model[0].date);
 							$('#money').html(model[0].money / 100);
-							$('#remark').html(model[0].remark);
+							$('#remark').html($.trim(model[0].remark).length == 0 ? '暂无备注' : model[0].remark);
 							$('#createTime').html(model[0].create_time);
 
 							if (utils.fmtDate(model[0].create_time, 'yyyy-MM-dd') == utils.getDate('yyyy-MM-dd')) {
