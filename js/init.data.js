@@ -138,12 +138,6 @@
  			type: 0,
  			icon: 'icon-shuiguo',
  			sort: 19
- 		}, {
- 			id: 20,
- 			name: '礼金',
- 			type: 0,
- 			icon: 'icon-shuiguo',
- 			sort: 20
  		}];
  		for (var i in list)
  			service.consume_type.insert(list[i]);
