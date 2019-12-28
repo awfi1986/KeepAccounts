@@ -88,7 +88,7 @@
 
 	<body>
 		<div class="mui-row header">
-			<div class="mui-col-xs-4">
+			<div class="mui-col-xs-4" id="txtYear">
 				<span class="year">2019</span><br />
 				<span class="month">11</span><span>月</span>
 			</div>
@@ -217,7 +217,7 @@
 							categories.push(v.name);
 							data.push(v.total / 100);
 						});
-						var title = utils.fmtDate(j.start_date, 'yyyy年MM月');
+						var title = utils.fmtDate(j.start_date, 'yyyy-MM');
 						j.showPicReport(title + '支出比率', arr);
 						j.showColumReport(title + '支出统计', categories, data);
 					});
@@ -342,8 +342,21 @@
 					}
 				});
 
+				var lastback = 0;
 				initPage(function(cur) {
 					j.init();
+					 
+					mui.back = function(event) {
+						//var wv=plus.webview.currentWebview();
+						//console.log(wv.id);
+						var t = new Date().getTime(); 
+						if(t - lastback < 2000) {
+							plus.runtime.quit();
+						} else {
+							lastback = t;
+							mui.toast("再按一次退出应用");
+						}
+					};
 				});
 				//记一笔
 				mui('.mui-bar-tab').on('tap', 'a', function(e) {
@@ -392,6 +405,11 @@
 						 localStorage.setItem("$isShowMoney",0);
 					} 
 				});
+				//切换日期
+				mui('.header').on('tap','#txtYear',function(){
+					
+					
+				}); 
 			})(mui, document);
 
 			window.addEventListener('refresh', function() {

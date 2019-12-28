@@ -33,22 +33,22 @@
 			</div>
 		</header>
 		<div class="mui-content">
-			<div class="date mui-row">
+			<div class="mui-row">
 				<span>记录类型：</span><span id="type"></span>
 			</div>
-			<div class="date mui-row">
+			<div class="mui-row">
 				<span>消费日期：</span><span id="date"></span>
 			</div>
-			<div class="date mui-row">
+			<div class="mui-row">
 				<span>消费类型：</span><span id="consume_name"></span>
 			</div>
-			<div class="date mui-row">
+			<div class="mui-row">
 				<span>消费金额：</span><span id="money"></span>
 			</div>
-			<!-- <div class="date mui-row">
+			<!-- <div class="mui-row">
 				<span>记录时间：</span><span id="createTime"></span>
 			</div> -->
-			<div class="date mui-row">
+			<div class="mui-row">
 				<span>备注：</span><span id="remark"></span>
 			</div>
 
@@ -85,13 +85,49 @@
 				load_data: function() {
 					service.consume_record.query_dateil(j.guid, function(model) {
 						if (model != null && model.length > 0) {
-							$('#type').html((model[0].type == 0) ? '支出' : '收入');
-							$('#consume_icon').html(model[0].date);
-							$('#consume_name').html(model[0].consume_name);
-							$('#date').html(model[0].date);
-							$('#money').html(model[0].money / 100);
-							$('#remark').html($.trim(model[0].remark).length == 0 ? '暂无备注' : model[0].remark);
-							$('#createTime').html(model[0].create_time);
+							// $('#type').html((model[0].type == 0) ? '支出' : '收入');
+							// $('#consume_icon').html(model[0].date);
+							// $('#consume_name').html(model[0].consume_name);
+							// $('#date').html(model[0].date);
+							// $('#money').html(model[0].money / 100);
+							// $('#remark').html($.trim(model[0].remark).length == 0 ? '暂无备注' : model[0].remark);
+							// $('#createTime').html(model[0].create_time);
+
+							var htm = [];
+
+							if (model[0].type == 0) {
+								htm.push('<div class="mui-row">');
+								htm.push('	<span>收支类型：</span><span id="type">支出</span>');
+								htm.push('</div>');
+								htm.push('<div class="mui-row">');
+								htm.push('	<span>消费日期：</span><span id="date">' + model[0].date + '</span>');
+								htm.push('</div>');
+								htm.push('<div class="date mui-row">');
+								htm.push('	<span>消费类型：</span><span id="consume_name">' + model[0].consume_name + '</span>');
+								htm.push('</div>');
+								htm.push('<div class="date mui-row">');
+								htm.push('	<span>消费金额：</span><span id="money">' + (model[0].money / 100) + '</span>');
+								htm.push('</div>');
+							} else {
+								htm.push('<div class="date mui-row">');
+								htm.push('	<span>收支类型：</span><span id="type">收入</span>');
+								htm.push('</div>');
+								htm.push('<div class="date mui-row">');
+								htm.push('	<span>收入日期：</span><span id="date">' + model[0].date + '</span>');
+								htm.push('</div>');
+								htm.push('<div class="date mui-row">');
+								htm.push('	<span>收入类型：</span><span id="consume_name">' + model[0].consume_name + '</span>');
+								htm.push('</div>');
+								htm.push('<div class="date mui-row">');
+								htm.push('	<span>收入金额：</span><span id="money">' + (model[0].money / 100) + '</span>');
+								htm.push('</div>');
+							}
+							htm.push('<div class="date mui-row">');
+							htm.push('	<span>备注：</span><span id="remark">' + ($.trim(model[0].remark).length == 0 ? '暂无备注' : model[0].remark) +
+								'</span>');
+							htm.push('</div>');
+							
+							$('.mui-content').html(htm.join(''));
 
 							if (utils.fmtDate(model[0].create_time, 'yyyy-MM-dd') == utils.getDate('yyyy-MM-dd')) {
 								$('#btn_del').show();

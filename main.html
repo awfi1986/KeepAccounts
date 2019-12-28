@@ -92,9 +92,7 @@
 		<script type="text/javascript" charset="UTF-8">
 			(function($$, doc) {
 
-				$$.init({
-					statusBarBackground: '#1b2338'
-				});
+				$$.init({ });
 
 				initPage(function(cur) {
 					init_base_data();
@@ -121,6 +119,7 @@
 						if (c == 1) {
 							if (input_password != password) {
 								$('.mui-content .mui-text-center span').text('密码错误');
+								input_password = '';
 								setTimeout(function() {
 									$('.input-key span[class=curr]').removeClass('curr');
 									$('.mui-content .mui-text-center span').text('请输入密码');
@@ -130,7 +129,7 @@
 
 							plus.navigator.setCookie("isLogin", true);
 							toPage('/home/index.html', '/home/index.html');
-							//closePage('home/login.html','home/index.html','/home/index.html');
+							//closePage('main.html','main.html','main.html');
 							setTimeout(function() {
 								input_password = '';
 								$('.input-key span[class=curr]').removeClass('curr');
