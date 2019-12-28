@@ -1,25 +1,9 @@
-/*
- * 主要是接口
- */
-
-//网络IP地址或域名 
-var baseurl = "https://gl.chlxb.com:8229";
-//var baseurl = "http://192.168.0.105:2822";
-
-var req_url = {
-	Account: {
-		Register: baseurl + '/api/Account/Register', //注册 
-	},
-	Version: {
-		Check: baseurl + '/api/Version/Check' //版本更新
-	}
-}
-
-var Page = {
-	PageSize: 20,
-	PageIndex: 1
-}
-
+function initPage(meth) {
+	mui.plusReady(function() {
+		var self = plus.webview.currentWebview();
+		return meth(self);
+	});
+} 
 //跳转到某一个页面
 function toPage(url, id, arg) {
 	console.log("toPage:" + url);
@@ -63,14 +47,7 @@ function OpenPage(url, id, arg) {
 		}
 	});
 }
-
-function initPage(meth) {
-	mui.plusReady(function() {
-		var self = plus.webview.currentWebview();
-		return meth(self);
-	});
-}
-
+ 
 /**
  * 判断网络是否连接
  * return true:没有联网   false:联网
@@ -107,141 +84,7 @@ function IsServiceError() {
 		}
 	});
 }
-
-function checkLogin() {
-	var info = localStorage.getItem("$logininfo");
-
-	if (info == null || info.length == 0) {
-
-		//setTimeout(function() {
-		toPage('../user/login.html', '../user/login.html', {
-			tag: 'login'
-		});
-		//}, 1000);
-
-		return false;
-	}
-	return true;
-}
-
-/**
- * 登录系统
- */
-function isLongin(funcSucceed) {
-	var info = localStorage.getItem("$logininfo");
-	var url = "../user/login.html";
-	var id = "../user/login.html";
-	console.log("isLogin()");
-	if (info != null && info != "") {
-		info = JSON.parse(info);
-		var str = decrypt(info.Pwd, info.Account);
-		mui.post(req_url.Account.Silenceurl, {
-			Account: info.Account,
-			Pwd: str,
-			WxOpenId: info.WxOpenId,
-			WbOpenId: info.WbOpenId,
-			QqOpenId: info.QqOpenId,
-		}, function(d) {
-			if (d.result == "succeed") {
-
-				var loginInfo = {
-					MemberID: d.content.ID,
-					Account: d.content.Account,
-					Pwd: encrypt(d.content.Pwd, info.Account),
-					Token: d.content.Token,
-					WxOpenId: d.content.WxOpenId,
-					WbOpenId: d.content.WbOpenId,
-					QqOpenId: d.content.QqOpenId,
-					BusinessType: d.content.BusinessType,
-					Timestamp: new Date().getTime()
-				};
-				localStorage.setItem("$logininfo", JSON.stringify(loginInfo));
-				//保证只有唯一用户才能调用
-				localStorage.setItem("$userinfo_" + loginInfo.Account, JSON.stringify(d.content));
-				console.log("isLoginEnd");
-				if (funcSucceed != undefined) {
-					funcSucceed();
-				}
-			} else {
-				localStorage.removeItem("$logininfo");
-				toPage(url, id);
-			}
-		});
-	} else {
-		localStorage.removeItem("$logininfo");
-		toPage(url, id);
-	}
-}
-
-//自动登录
-function autoLogin(account, pwd) {
-	var obj = {
-		Account: account,
-		Pwd: pwd
-	}
-	ajaxPost(req_url.Account.Login, obj, function(d) {
-		if (d.result) {
-
-			var loginInfo = {
-				MemberID: d.content.ID,
-				Account: d.content.Account,
-				Pwd: encrypt(d.content.Pwd, obj.Account),
-				Token: d.content.Token,
-				WxOpenId: d.content.WxOpenId,
-				WbOpenId: d.content.WbOpenId,
-				QqOpenId: d.content.QqOpenId,
-				BusinessType: d.content.BusinessType,
-				Timestamp: new Date().getTime()
-			};
-			localStorage.setItem("$logininfo", JSON.stringify(loginInfo));
-			//保证只有唯一用户才能调用
-			localStorage.setItem("$userinfo_" + loginInfo.Account, JSON.stringify(d.content));
-
-			mui.toast('登录成功！');
-
-			setTimeout(function() {
-				toPage('../home/index.html', '../home/index.html');
-			}, 500);
-
-		} else {
-			mui.toast(d.error);
-			localStorage.removeItem("$logininfo");
-		}
-	}, 1);
-}
-//自动登录
-function threeLogin(arg) {
-	ajaxPost(req_url.Account.ThreeLogin, arg, function(d) {
-		if (d.result == "succeed") {
-			var loginInfo = {
-				MemberID: d.content.ID,
-				Account: d.content.Account,
-				Pwd: encrypt(d.content.Pwd, d.content.Account),
-				Token: d.content.Token,
-				WxOpenId: d.content.WxOpenId,
-				WbOpenId: d.content.WbOpenId,
-				QqOpenId: d.content.QqOpenId,
-				BusinessType: d.content.BusinessType,
-				Timestamp: new Date().getTime()
-			};
-			localStorage.setItem("$logininfo", JSON.stringify(loginInfo));
-			//保证只有唯一用户才能调用
-			localStorage.setItem("$userinfo_" + loginInfo.Account, JSON.stringify(d.content));
-
-			mui.toast('登录成功！');
-
-			setTimeout(function() {
-				toPage('../home/index.html', '../home/index.html');
-			}, 500);
-
-		} else {
-			//mui.toast(d.error);
-			localStorage.removeItem("$logininfo");
-			toPage('../user/bound.html', '../user/bound.html', arg);
-		}
-	}, 0);
-}
-
+ 
 function ajaxUrl(url, arg, meth, isError) {
 	console.log(baseurl + url);
 	mui.ajax(baseurl + url, {
@@ -364,17 +207,7 @@ function colseScroll() {
 		scrollIndicator: 'none'
 	});
 }
-
-function colseOrder(tid, state) {
-	var arg = {
-		mainId: tid,
-		state: state
-	}
-	localStorage.setItem("$orderTab", JSON.stringify(arg));
-	closePage("/home.html", "/main.html", "orderTab");
-	mui.back();
-}
-
+  
 function closePage(arg1, arg2, arg3) {
 	var main = plus.webview.all();
 	for (var i = 0; i < main.length; i++) {
