@@ -128,8 +128,8 @@
 							htm.push('</div>');
 							
 							$('.mui-content').html(htm.join(''));
-
-							if (utils.fmtDate(model[0].create_time, 'yyyy-MM-dd') == utils.getDate('yyyy-MM-dd')) {
+ 
+							if (utils.fmtDate(model[0].create_time, 'yyyy-MM-dd') == utils.getDate('yyyy-MM-dd')) { 
 								$('#btn_del').show();
 							}
 						}

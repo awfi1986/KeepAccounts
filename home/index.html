@@ -94,11 +94,11 @@
 			</div>
 			<div class="mui-col-xs-4">
 				<div>本月收入(元)</div>
-				<div><span id="txtIncome">0.00</span></div>
+				<div><span id="txtIncome"></span></div>
 			</div>
 			<div class="mui-col-xs-4">
 				<div id="div-pay">本月支出(元)</div>
-				<div><span id="txtPay">0.00</span></div>
+				<div><span id="txtPay"></span></div>
 			</div>
 		</div>
 		<div class="mui-content">
@@ -163,6 +163,9 @@
 					var month = date.getMonth() + 1;
 					var day = new Date(year, month + 1, 0).getDate();
 
+					if (month < 10) month = '0' + month;
+					if (day < 10) month = '0' + day;
+
 					$('.year').text(year);
 					$('.month').text(month);
 
@@ -225,21 +228,31 @@
 				month_statis: function() {
 					service.month_statis(j.start_date, j.end_date, function(data) {
 						var isShow = localStorage.getItem("$isShowMoney");
-						 
-						if(data.length>0){
-							$.each(data,function (i,v) {
-								var money = utils.fmtMoney(v.total, 2);
-								var text_money = (isShow==0)?'******':money;
-								if(v.type==0){
-									$('#txtPay').text(text_money);
-									$('#txtPay').data('money',money);
-								}else{
-									$('#txtIncome').text(text_money);
-									$('#txtIncome').data('money',money);
-								}
-							})
+						var arr = [{
+							type: 0,
+							total: 0
+						}, {
+							type: 1,
+							total: 0
+						}];
+						if (data.length > 0) {
+							$.each(data, function(i, v) {
+								arr[v.type].total = v.total;
+							});
 						} 
-					}); 
+						$.each(arr, function(i, v) {
+							var money = utils.fmtMoney(v.total, 2);
+							var text_money = (isShow == 0) ? '******' : money;
+							if (v.type == 0) {
+								$('#txtPay').text(text_money);
+								$('#txtPay').data('money', money);
+							} else {
+								$('#txtIncome').text(text_money);
+								$('#txtIncome').data('money', money);
+							}
+						});
+
+					});
 				},
 				refresh: function() {
 					j.page_index = 0;
@@ -345,12 +358,12 @@
 				var lastback = 0;
 				initPage(function(cur) {
 					j.init();
-					 
+
 					mui.back = function(event) {
 						//var wv=plus.webview.currentWebview();
 						//console.log(wv.id);
-						var t = new Date().getTime(); 
-						if(t - lastback < 2000) {
+						var t = new Date().getTime();
+						if (t - lastback < 2000) {
 							plus.runtime.quit();
 						} else {
 							lastback = t;
@@ -386,30 +399,30 @@
 				//详情
 				mui('#list > ul').on('tap', 'a', function() {
 					var guid = $(this).data('guid');
-					var type = $(this).data('type'); 
+					var type = $(this).data('type');
 					toPage('/home/detail.html', '/home/detail.html', {
 						guid: guid,
 						type: type
 					});
 				});
 				//显示或隐藏本月收入和支出
-				mui('.header').on('tap','#div-pay',function(){
+				mui('.header').on('tap', '#div-pay', function() {
 					var isShow = localStorage.getItem("$isShowMoney");
-					if(isShow==0){
+					if (isShow == 0) {
 						$('#txtPay').text($('#txtPay').data('money'));
 						$('#txtIncome').text($('#txtIncome').data('money'));
-						 localStorage.setItem("$isShowMoney",1);
-					}else{
+						localStorage.setItem("$isShowMoney", 1);
+					} else {
 						$('#txtPay').text("******");
-						$('#txtIncome').text("******"); 
-						 localStorage.setItem("$isShowMoney",0);
-					} 
+						$('#txtIncome').text("******");
+						localStorage.setItem("$isShowMoney", 0);
+					}
 				});
 				//切换日期
-				mui('.header').on('tap','#txtYear',function(){
-					
-					
-				}); 
+				mui('.header').on('tap', '#txtYear', function() {
+
+
+				});
 			})(mui, document);
 
 			window.addEventListener('refresh', function() {

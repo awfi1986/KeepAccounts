@@ -352,6 +352,13 @@ var utils = {
 		var ddate = myDate.toLocaleDateString(); //获取当前日期     
 		var dtime = myDate.toLocaleTimeString(); //获取当前时间    
 		var ddatetime = myDate.toLocaleString(); //获取日期与时间
+		
+		if (month < 10) month = '0' + month;
+		if (date < 10) date = '0' + date;
+		if (hours < 10) hours = '0' + hours;
+		if (minute < 10) minute = '0' + minute;
+		if (second < 10) second = '0' + second;
+		
 		if (fmt) {
 			if (fmt == "yyyy-MM-dd") return cyear + "-" + month + "-" + date;
 			if (fmt == "yyyy-MM-dd HH:mm:ss") return cyear + "-" + month + "-" + date + " " + hours + ":" + minute + ":" +
