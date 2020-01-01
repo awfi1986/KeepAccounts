@@ -1,7 +1,7 @@
 # Blueprint 
  
 #### 项目介绍
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blueprint（蓝本） 是一个生活记账的APP。可以记录生活各类消费和收入
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blueprint（蓝本）是一个生活记账的APP。可以记录生活各类消费和收入，并且可以按月以图形报表展示各类消费占比情况。
        
 #### 更新记录
 * 2020-01-01 更新 1.修改日期格式不一致导致查询记录失败的BUG
